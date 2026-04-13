@@ -6,6 +6,8 @@ export type EraId =
   | '2000-2005'
   | '2005-2010'
   | '2010-2015'
+  | '2015-2020'
+  | '2020-2025'
 
 export interface StockInfo {
   symbol: string
