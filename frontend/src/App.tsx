@@ -98,7 +98,6 @@ export default function App() {
   }
 
   const era = selectedEra ? getEraById(selectedEra) : null
-  const accentAmber = era?.color === 'amber'
 
   return (
     <div className="min-h-screen bg-bg text-text">
