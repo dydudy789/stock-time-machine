@@ -307,10 +307,10 @@ export const ERAS: EraInfo[] = [
   // ─────────────────────────────────────────────
   {
     id: '1990-1995',
-    title: 'The Blue Chip Era',
+    title: 'The Dawn of the Internet',
     subtitle: '1990 – 1995',
     description:
-      'America was coming out of recession and entering a decade of prosperity. Institutional investors piled into household names — steady dividends, global expansion, and undeniable moats.',
+      "America clawed out of recession into an era of optimism. The World Wide Web went public in 1991. Mosaic launched in 1993. Netscape was coming. Most investors still piled into household blue chips — but underground, a revolution was quietly being wired together.",
     dateRange: { start: '1990-01-01', end: '1995-12-31' },
     color: 'amber',
     stocks: [
@@ -371,20 +371,20 @@ export const ERAS: EraInfo[] = [
         availableFrom: '1980-01-01',
       },
       {
-        symbol: 'IBM',
-        name: 'IBM',
+        symbol: 'INTC',
+        name: 'Intel',
         sector: 'Technology',
-        description: '"Big Blue" — still the institutional definition of safe tech in 1990. Then PCs disrupted everything.',
-        outcome: "IBM was flat for a decade while Microsoft ate its lunch. A cautionary tale about tech's pace.",
+        description: '"Intel Inside" stickers appeared on every new PC in 1991. The microprocessor was the engine of the digital age.',
+        outcome: 'Intel dominated the PC era and compounded through the 90s — until it missed mobile and lost its edge.',
         availableFrom: '1980-01-01',
       },
       {
-        symbol: 'T',
-        name: 'AT&T',
-        sector: 'Telecom',
-        description: 'The phone company. Telecom deregulation seemed poised to unlock explosive growth.',
-        outcome: 'AT&T fragmented, merged, and restructured endlessly — a complex 30-year saga of destroyed value.',
-        availableFrom: '1980-01-01',
+        symbol: 'CSCO',
+        name: 'Cisco Systems',
+        sector: 'Technology',
+        description: 'IPO\'d in 1990. Every office network and early internet connection ran through Cisco routers.',
+        outcome: 'Cisco grew 1,000%+ in the 90s as the internet infrastructure buildout accelerated. Then the dot-com bust hit hard.',
+        availableFrom: '1990-02-16',
       },
       {
         symbol: 'MO',
@@ -405,12 +405,12 @@ export const ERAS: EraInfo[] = [
         availableFrom: '1980-01-01',
       },
       {
-        symbol: 'MSFT',
-        name: 'Microsoft',
+        symbol: 'DELL',
+        name: 'Dell Computer',
         sector: 'Technology',
-        description: 'Growing fast but still seen as a software vendor, not a blue chip. Institutions preferred "real" companies.',
-        outcome: 'Microsoft became the most valuable company on earth by 1999. The biggest compounding story of the 90s.',
-        availableFrom: '1986-03-13',
+        description: 'Selling PCs by mail order from a dorm room? Institutions dismissed Dell as a low-margin box assembler with no moat.',
+        outcome: 'Dell became the fastest-growing major company of the 90s. Direct-to-consumer crushed traditional PC retailers.',
+        availableFrom: '1988-06-22',
       },
       {
         symbol: 'SBUX',
@@ -695,12 +695,12 @@ export const ERAS: EraInfo[] = [
         availableFrom: '1983-06-17',
       },
       {
-        symbol: 'CMG',
-        name: 'Chipotle',
-        sector: 'Consumer',
-        description: 'IPO\'d January 2006. "Just another fast food chain." McDonald\'s actually owned a stake and spun it off.',
-        outcome: 'Chipotle created the "fast casual" dining category and 10x\'d within a few years of its IPO.',
-        availableFrom: '2006-01-26',
+        symbol: 'PCLN',
+        name: 'Priceline',
+        sector: 'Consumer Discretionary',
+        description: 'Crashed 99% from $974 to $7 in the dot-com bust. William Shatner ads. Written off as a dot-com joke.',
+        outcome: 'Priceline recovered to become the world\'s largest online travel company. One of the greatest comebacks in stock market history.',
+        availableFrom: '1999-03-30',
       },
       {
         symbol: 'ISRG',
@@ -934,14 +934,6 @@ export const ERAS: EraInfo[] = [
         outcome: 'MSFT doubled from 2014-2015 alone after Nadella\'s pivot. The "dead money" stock became a compounder.',
         availableFrom: '1986-03-13',
       },
-      {
-        symbol: 'TSLA',
-        name: 'Tesla',
-        sector: 'Technology',
-        description: 'Model S launched 2012 to rave reviews. Still called a scam by most of Wall Street.',
-        outcome: 'Tesla rose 1,000%+ from 2012-2014 then gave back gains. Volatility that tested every investor\'s conviction.',
-        availableFrom: '2010-06-29',
-      },
     ],
     outcasts: [
       {
@@ -953,12 +945,12 @@ export const ERAS: EraInfo[] = [
         availableFrom: '2010-06-29',
       },
       {
-        symbol: 'NFLX',
-        name: 'Netflix',
+        symbol: 'LNKD',
+        name: 'LinkedIn',
         sector: 'Technology',
-        description: '"A DVD company pretending to be a tech company." Analysts worried about content costs destroying margins.',
-        outcome: 'Netflix became the defining entertainment company of the decade and forced every media giant to play catch-up.',
-        availableFrom: '2002-05-23',
+        description: 'IPO\'d May 2011. "Facebook for bored professionals and recruiters." Analysts called the valuation absurd.',
+        outcome: 'LinkedIn became the dominant professional network and was acquired by Microsoft in 2016 for $26B — a 100%+ premium.',
+        availableFrom: '2011-05-19',
       },
       {
         symbol: 'MSFT',
