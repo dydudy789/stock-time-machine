@@ -17,6 +17,14 @@ export const INDEX_STOCKS: StockInfo[] = [
     outcome: 'Launched in 1999, QQQ was crushed in the dot-com bust but recovered spectacularly in the 2010s.',
     availableFrom: '1999-03-10',
   },
+  {
+    symbol: 'GLD',
+    name: 'Gold ETF',
+    sector: 'Index',
+    description: 'Tracks the price of physical gold. A classic safe-haven asset and inflation hedge.',
+    outcome: 'Gold surged during the 2008 crisis and hit all-time highs in the 2020s as investors sought safety.',
+    availableFrom: '2004-11-18',
+  },
 ]
 
 export const ERAS: EraInfo[] = [
