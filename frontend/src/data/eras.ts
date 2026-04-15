@@ -37,6 +37,168 @@ export const INDEX_STOCKS: StockInfo[] = [
 
 export const ERAS: EraInfo[] = [
   // ─────────────────────────────────────────────
+  // 1970 – 1975
+  // ─────────────────────────────────────────────
+  {
+    id: '1970-1975',
+    title: 'The Nifty Fifty Crash',
+    subtitle: '1970 – 1975',
+    description:
+      'Institutions piled into 50 "one-decision" blue chip growth stocks at absurd valuations — Polaroid at 90x PE, McDonald\'s at 80x. Then the 1973 oil embargo and bear market wiped out 45% of the market, the worst crash since the Depression. The era that proved no stock is too safe to fall.',
+    dateRange: { start: '1970-01-01', end: '1975-12-31' },
+    color: 'teal',
+    stocks: [
+      {
+        symbol: 'IBM',
+        name: 'IBM',
+        sector: 'Technology',
+        description: 'The computing monopoly. Every corporation ran on IBM mainframes. The most institutional stock in America.',
+        outcome: 'IBM held up better than most in the crash but the PC era would eventually humble it.',
+        availableFrom: '1970-01-01',
+      },
+      {
+        symbol: 'XOM',
+        name: 'ExxonMobil',
+        sector: 'Energy',
+        description: 'The 1973 Arab oil embargo sent oil from $3 to $12 overnight. Energy stocks became the only safe haven.',
+        outcome: 'Exxon was one of the few stocks to hold value during the crash as oil revenues soared.',
+        availableFrom: '1970-01-01',
+      },
+      {
+        symbol: 'KO',
+        name: 'Coca-Cola',
+        sector: 'Consumer Staples',
+        description: 'A Nifty Fifty darling — the kind of brand so dominant that paying any price seemed justified.',
+        outcome: 'Coke crashed with the Nifty Fifty but its brand endured. Patient holders were eventually rewarded.',
+        availableFrom: '1970-01-01',
+      },
+      {
+        symbol: 'JNJ',
+        name: 'Johnson & Johnson',
+        sector: 'Healthcare',
+        description: 'Healthcare was considered a one-way bet — aging population, growing demand, trusted brands.',
+        outcome: 'J&J survived the crash and became a multi-decade compounder for conservative investors.',
+        availableFrom: '1970-01-01',
+      },
+      {
+        symbol: 'MCD',
+        name: "McDonald's",
+        sector: 'Consumer',
+        description: 'Trading at 80x earnings — the ultimate Nifty Fifty growth story. Fast food was eating America.',
+        outcome: 'McDonald\'s crashed hard in the bear market but recovered as global expansion proved the growth thesis right.',
+        availableFrom: '1970-01-01',
+      },
+    ],
+    outcasts: [
+      {
+        symbol: 'WMT',
+        name: 'Walmart',
+        sector: 'Retail',
+        description: 'Just IPO\'d in 1970. A discount retailer from Arkansas nobody on Wall Street took seriously.',
+        outcome: 'Walmart became the greatest retail compounding story in history. The ignored IPO of the decade.',
+        availableFrom: '1970-10-10',
+      },
+      {
+        symbol: 'MO',
+        name: 'Altria (Philip Morris)',
+        sector: 'Consumer Staples',
+        description: 'Health warnings on cigarettes since 1965 made tobacco radioactive to most institutional investors.',
+        outcome: 'Despite the stigma, MO\'s dividends compounded into one of the greatest long-term returns of the century.',
+        availableFrom: '1970-01-01',
+      },
+      {
+        symbol: 'BA',
+        name: 'Boeing',
+        sector: 'Aerospace',
+        description: '"Will the last person leaving Seattle please turn out the lights." Boeing laid off 60,000 people and was near collapse.',
+        outcome: 'Boeing recovered and became the dominant force in commercial aviation for the next five decades.',
+        availableFrom: '1970-01-01',
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────────
+  // 1975 – 1980
+  // ─────────────────────────────────────────────
+  {
+    id: '1975-1980',
+    title: 'The Oil Shock',
+    subtitle: '1975 – 1980',
+    description:
+      'Stagflation paralyzed America — high inflation and high unemployment at the same time. The Dow went nowhere for a decade. Nixon had resigned. Carter stumbled. But oil went from $3 to $35 a barrel and energy stocks were the only game in town. The era that rewarded the boring and patient.',
+    dateRange: { start: '1975-01-01', end: '1980-12-31' },
+    color: 'amber',
+    stocks: [
+      {
+        symbol: 'XOM',
+        name: 'ExxonMobil',
+        sector: 'Energy',
+        description: 'Oil hit $35/barrel by 1980. Exxon was printing money and every investor wanted energy exposure.',
+        outcome: 'Exxon was the standout performer of the late 70s as the second oil shock in 1979 supercharged revenues.',
+        availableFrom: '1970-01-01',
+      },
+      {
+        symbol: 'IBM',
+        name: 'IBM',
+        sector: 'Technology',
+        description: 'Mainframes powered every bank, government, and corporation. IBM was the only tech stock institutions trusted.',
+        outcome: 'IBM dominated the 70s but was quietly setting the stage for its own disruption by giving away the PC operating system.',
+        availableFrom: '1970-01-01',
+      },
+      {
+        symbol: 'T',
+        name: 'AT&T',
+        sector: 'Telecom',
+        description: 'The largest company on earth. A telephone monopoly with guaranteed returns — the ultimate institutional holding.',
+        outcome: 'AT&T was broken up by court order in 1984 into Baby Bells, unlocking enormous value for shareholders.',
+        availableFrom: '1970-01-01',
+      },
+      {
+        symbol: 'GE',
+        name: 'General Electric',
+        sector: 'Industrial',
+        description: 'The bellwether of American industry. Every pension fund and endowment owned GE as a core holding.',
+        outcome: 'Jack Welch took over in 1981 and GE became one of the greatest compounders of the next two decades.',
+        availableFrom: '1970-01-01',
+      },
+      {
+        symbol: 'MRK',
+        name: 'Merck',
+        sector: 'Healthcare',
+        description: 'Pharmaceutical giants thrived during stagflation — people needed medicine regardless of the economy.',
+        outcome: 'Merck was one of the best-performing stocks of the late 70s and into the 80s bull market.',
+        availableFrom: '1970-01-01',
+      },
+    ],
+    outcasts: [
+      {
+        symbol: 'DIS',
+        name: 'Disney',
+        sector: 'Entertainment',
+        description: 'Walt had been dead for nearly a decade. Animation was stale, the parks were stagnant, management was adrift.',
+        outcome: 'Michael Eisner arrived in 1984 and launched the "Disney Decade" — one of history\'s great corporate turnarounds.',
+        availableFrom: '1970-01-01',
+      },
+      {
+        symbol: 'INTC',
+        name: 'Intel',
+        sector: 'Technology',
+        description: 'IPO\'d 1971. Microprocessors were dismissed as gadgets for hobbyists — IBM ran on mainframes, not chips.',
+        outcome: 'Intel\'s microprocessor became the engine of the PC revolution. Early believers were rewarded beyond imagination.',
+        availableFrom: '1971-10-13',
+      },
+      {
+        symbol: 'HPQ',
+        name: 'Hewlett-Packard',
+        sector: 'Technology',
+        description: 'A niche scientific instrument and calculator maker. IBM dismissed it as irrelevant to real enterprise computing.',
+        outcome: 'HP grew into one of the largest technology companies in the world as computing moved beyond the mainframe.',
+        availableFrom: '1970-01-01',
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────────
   // 1980 – 1985
   // ─────────────────────────────────────────────
   {
@@ -147,11 +309,11 @@ export const ERAS: EraInfo[] = [
         availableFrom: '1981-09-22',
       },
       {
-        symbol: 'DIS',
-        name: 'Disney',
-        sector: 'Entertainment',
-        description: 'Walt had been dead 15 years. The parks were struggling, animation was stale. Institutional investors ignored it.',
-        outcome: 'Michael Eisner arrived in 1984 and transformed Disney. The "Disney Decade" of 1984-1994 was one of history\'s great corporate turnarounds.',
+        symbol: 'F',
+        name: 'Ford Motor',
+        sector: 'Automotive',
+        description: 'Japanese cars were winning. The Pinto scandal lingered. Ford was losing billions and analysts called American auto finished.',
+        outcome: 'Ford engineered one of the great corporate turnarounds of the 80s. The Taurus saved the company and proved American manufacturing wasn\'t dead.',
         availableFrom: '1980-01-01',
       },
       {

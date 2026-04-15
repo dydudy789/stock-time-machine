@@ -19,7 +19,7 @@ export function Hero({ onStart }: { onStart: () => void }) {
       <div className="relative z-10 max-w-4xl">
         <div className="inline-flex items-center gap-2 border border-teal/30 rounded-full px-4 py-1.5 text-teal text-sm font-mono mb-8">
           <TrendingUp size={14} />
-          Historical DCA Simulator · 1980 – 2015
+          Historical DCA Simulator · 1970 – 2025
         </div>
 
         <h1 className="text-5xl md:text-7xl font-black text-text leading-none mb-6 tracking-tight">
@@ -47,9 +47,9 @@ export function Hero({ onStart }: { onStart: () => void }) {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-20 text-left">
           {[
-            { label: 'Eras', value: '7', sub: '1980 – 2015' },
-            { label: 'Stocks', value: '70+', sub: 'Darlings & outcasts' },
-            { label: 'Data', value: '45yr', sub: 'Real monthly prices' },
+            { label: 'Eras', value: '9', sub: '1970 – 2025' },
+            { label: 'Stocks', value: '100+', sub: 'Darlings & outcasts' },
+            { label: 'Data', value: '55yr', sub: 'Real monthly prices' },
             { label: 'Dividends', value: '✓', sub: 'Fully included' },
           ].map(({ label, value, sub }) => (
             <div

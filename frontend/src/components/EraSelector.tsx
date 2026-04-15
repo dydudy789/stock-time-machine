@@ -1,9 +1,11 @@
-import { TrendingUp, Zap, Shield, Flame, Globe, BarChart2, Rocket, Cpu, Bot } from 'lucide-react'
+import { TrendingUp, Zap, Shield, Flame, Globe, BarChart2, Rocket, Cpu, Bot, TrendingDown, Fuel } from 'lucide-react'
 import clsx from 'clsx'
 import { ERAS } from '../data/eras'
 import type { EraId } from '../types'
 
 const ERA_ICONS: Record<EraId, React.ElementType> = {
+  '1970-1975': TrendingDown,
+  '1975-1980': Fuel,
   '1980-1985': Shield,
   '1985-1990': Flame,
   '1990-1995': Globe,
@@ -75,9 +77,11 @@ export function EraSelector({ selected, onSelect }: Props) {
               <h3 className="text-text font-bold text-sm mb-2 leading-snug">{era.title}</h3>
 
               <div className="flex items-center gap-2 mt-3">
-                <span className={clsx('text-xs font-mono', isSelected ? (isAmber ? 'text-amber/70' : 'text-teal/70') : 'text-muted')}>
-                  {era.stocks.length} darlings · {era.outcasts.length} outcasts
-                </span>
+                {isSelected && (
+                  <span className={clsx('text-xs font-mono', isAmber ? 'text-amber/70' : 'text-teal/70')}>
+                    {era.stocks.length} darlings · {era.outcasts.length} outcasts
+                  </span>
+                )}
                 {isSelected && (
                   <span
                     className={clsx(
