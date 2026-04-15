@@ -64,7 +64,7 @@ export function Hero({ onStart }: { onStart: () => void }) {
         </div>
 
         {/* Era timeline */}
-        <div className="mt-12 flex items-center justify-center gap-0 text-xs font-mono overflow-x-auto">
+        <div className="mt-12 hidden sm:flex items-center justify-center gap-0 text-xs font-mono overflow-x-auto">
           {[
             { years: '1980–85', label: 'Morning\nin America' },
             { years: '1985–90', label: 'Roaring\nEighties' },

@@ -62,8 +62,8 @@ export function ResultsChart({ data, symbols, stockResults }: Props) {
     <div className="bg-surface border border-border rounded-2xl p-6">
       <h3 className="text-text font-bold text-lg mb-6">Portfolio Growth Over Time</h3>
 
-      <ResponsiveContainer width="100%" height={420}>
-        <ComposedChart data={data} margin={{ top: 10, right: 20, bottom: 10, left: 20 }}>
+      <ResponsiveContainer width="100%" height={320}>
+        <ComposedChart data={data} margin={{ top: 10, right: 10, bottom: 10, left: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#1e2a3a" />
 
           <XAxis
@@ -78,11 +78,11 @@ export function ResultsChart({ data, symbols, stockResults }: Props) {
           />
 
           <YAxis
-            tick={{ fill: '#64748b', fontSize: 11, fontFamily: 'monospace' }}
+            tick={{ fill: '#64748b', fontSize: 10, fontFamily: 'monospace' }}
             tickLine={false}
             axisLine={false}
             tickFormatter={(v: number) => formatCurrency(v)}
-            width={80}
+            width={65}
           />
 
           <Tooltip content={<CustomTooltip />} />

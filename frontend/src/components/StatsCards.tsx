@@ -111,8 +111,8 @@ export function StatsCards({ result }: Props) {
       {stockResults.length > 0 && (
         <div>
           <h3 className="text-text font-bold text-lg mb-3">Per-Stock Results</h3>
-          <div className="bg-surface border border-border rounded-xl overflow-hidden">
-            <table className="w-full text-sm">
+          <div className="bg-surface border border-border rounded-xl overflow-x-auto">
+            <table className="w-full text-sm min-w-[560px]">
               <thead>
                 <tr className="border-b border-border">
                   {['Ticker', 'Invested', 'Final Value', 'Return', 'CAGR', 'Multiple'].map(

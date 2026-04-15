@@ -119,19 +119,19 @@ export function StockPicker({ era, selected, onToggle }: Props) {
 
       {/* Darlings */}
       <div className="mb-8">
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex flex-wrap items-center gap-2 mb-4">
           <Star size={16} className={clsx(accentAmber ? 'text-amber' : 'text-teal')} />
           <div className={clsx('font-semibold text-sm', accentAmber ? 'text-amber' : 'text-teal')}>
             The Darlings
           </div>
-          <div className="text-muted text-xs">— what everyone wanted in {era.subtitle}</div>
+          <div className="text-muted text-xs hidden sm:block">— what everyone wanted in {era.subtitle}</div>
           {darlingCount > 0 && (
             <span className={clsx('ml-auto text-xs font-mono', accentAmber ? 'text-amber' : 'text-teal')}>
               {darlingCount} selected
             </span>
           )}
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
           {era.stocks.map((stock) => (
             <StockCard
               key={stock.symbol}
@@ -163,7 +163,7 @@ export function StockPicker({ era, selected, onToggle }: Props) {
           <p className="text-muted/80 text-xs mb-4">
             These stocks were unpopular, controversial, or outright laughed at during this era. Hover to see how the story ended.
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
             {era.outcasts.map((stock) => (
               <StockCard
                 key={stock.symbol}
