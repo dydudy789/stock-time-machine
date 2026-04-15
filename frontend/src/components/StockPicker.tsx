@@ -60,7 +60,7 @@ function StockCard({ stock, selected, onToggle, accentAmber, variant = 'darling'
         {stock.sector}
       </div>
 
-      <p className="text-muted text-xs leading-relaxed line-clamp-2">{stock.description}</p>
+      <p className={clsx('text-muted text-xs leading-relaxed', !selected && 'line-clamp-2')}>{stock.description}</p>
 
       <div className="mt-3 pt-3 border-t border-border/50 flex items-start gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
         <Info size={12} className="text-muted flex-shrink-0 mt-0.5" />
