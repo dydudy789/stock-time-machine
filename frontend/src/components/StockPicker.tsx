@@ -1,4 +1,4 @@
-import { Info, Star, AlertTriangle } from 'lucide-react'
+import { Star, AlertTriangle } from 'lucide-react'
 import clsx from 'clsx'
 import { INDEX_STOCKS } from '../data/eras'
 import type { EraInfo, StockInfo } from '../types'
@@ -61,11 +61,6 @@ function StockCard({ stock, selected, onToggle, accentAmber, variant = 'darling'
       </div>
 
       <p className={clsx('text-muted text-xs leading-relaxed', !selected && 'line-clamp-2')}>{stock.description}</p>
-
-      <div className="mt-3 pt-3 border-t border-border/50 flex items-start gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-        <Info size={12} className="text-muted flex-shrink-0 mt-0.5" />
-        <p className="text-muted/80 text-xs leading-relaxed">{stock.outcome}</p>
-      </div>
     </button>
   )
 }
