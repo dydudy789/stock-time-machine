@@ -1,11 +1,9 @@
-import { TrendingUp, Zap, Shield, Flame, Globe, BarChart2, Rocket, Cpu, Bot, TrendingDown, Fuel } from 'lucide-react'
+import { TrendingUp, Zap, Shield, Flame, Globe, BarChart2, Rocket, Cpu, Bot } from 'lucide-react'
 import clsx from 'clsx'
 import { ERAS } from '../data/eras'
 import type { EraId } from '../types'
 
 const ERA_ICONS: Record<EraId, React.ElementType> = {
-  '1970-1975': TrendingDown,
-  '1975-1980': Fuel,
   '1980-1985': Shield,
   '1985-1990': Flame,
   '1990-1995': Globe,

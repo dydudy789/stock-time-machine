@@ -19,7 +19,7 @@ export function Hero({ onStart }: { onStart: () => void }) {
       <div className="relative z-10 max-w-4xl">
         <div className="inline-flex items-center gap-2 border border-teal/30 rounded-full px-4 py-1.5 text-teal text-sm font-mono mb-8">
           <TrendingUp size={14} />
-          Historical DCA Simulator · 1970 – 2025
+          Historical DCA Simulator · 1980 – 2025
         </div>
 
         <h1 className="text-5xl md:text-7xl font-black text-text leading-none mb-6 tracking-tight">
@@ -47,9 +47,9 @@ export function Hero({ onStart }: { onStart: () => void }) {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-20 text-left">
           {[
-            { label: 'Eras', value: '9', sub: '1970 – 2025' },
+            { label: 'Eras', value: '7', sub: '1980 – 2025' },
             { label: 'Stocks', value: '100+', sub: 'Darlings & outcasts' },
-            { label: 'Data', value: '55yr', sub: 'Real monthly prices' },
+            { label: 'Data', value: '45yr', sub: 'Real monthly prices' },
             { label: 'Dividends', value: '✓', sub: 'Fully included' },
           ].map(({ label, value, sub }) => (
             <div
@@ -68,18 +68,20 @@ export function Hero({ onStart }: { onStart: () => void }) {
           {[
             { years: '1980–85', label: 'Morning\nin America' },
             { years: '1985–90', label: 'Roaring\nEighties' },
-            { years: '1990–95', label: 'Blue\nChips' },
+            { years: '1990–95', label: 'Early\nInternet' },
             { years: '1995–00', label: 'Dot-Com\nBoom' },
             { years: '2000–05', label: 'Crash &\nSurvivors' },
             { years: '2005–10', label: 'Boom &\nCrash' },
             { years: '2010–15', label: 'Mobile\nExplosion' },
-          ].map((era, i) => (
+            { years: '2015–20', label: 'Big\nTech' },
+            { years: '2020–25', label: 'Meme\nStocks' },
+          ].map((era, i, arr) => (
             <div key={era.years} className="flex items-center">
               <div className="text-center px-2">
                 <div className="text-teal/70 text-xs">{era.years}</div>
                 <div className="text-muted/50 text-xs whitespace-pre-line leading-tight mt-0.5">{era.label}</div>
               </div>
-              {i < 6 && <div className="text-border mx-1">→</div>}
+              {i < arr.length - 1 && <div className="text-border mx-1">→</div>}
             </div>
           ))}
         </div>
