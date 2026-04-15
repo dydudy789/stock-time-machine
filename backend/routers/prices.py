@@ -1,12 +1,17 @@
 from fastapi import APIRouter, HTTPException, Query
 from datetime import datetime, timezone
 from typing import List, Dict, Any
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import requests
 import csv
 import io
 import os
 
 router = APIRouter()
+
+# In-memory cache: key = (symbol, start, end) → price list
+# Historical data never changes, so no TTL needed.
+_cache: Dict[tuple, List[Dict[str, Any]]] = {}
 
 YAHOO_HEADERS = {
     "User-Agent": (
@@ -164,6 +169,10 @@ def _best_prices(candidates: List[List[Dict[str, Any]]], start: str) -> List[Dic
 
 def _fetch_with_fallback(symbol: str, start: str, end: str) -> List[Dict[str, Any]]:
     """Try Yahoo → Stooq → Tiingo, return whichever has data closest to the requested start."""
+    cache_key = (symbol, start, end)
+    if cache_key in _cache:
+        return _cache[cache_key]
+
     start_dt = datetime.strptime(start, "%Y-%m-%d")
 
     try:
@@ -175,13 +184,16 @@ def _fetch_with_fallback(symbol: str, start: str, end: str) -> List[Dict[str, An
     if yahoo_prices:
         first_dt = datetime.strptime(yahoo_prices[0]["date"], "%Y-%m-%d")
         if (first_dt - start_dt).days / 365 <= 2:
+            _cache[cache_key] = yahoo_prices
             return yahoo_prices
 
     # Try Stooq and Tiingo in parallel for older data
     stooq_prices = _fetch_stooq(symbol, start, end)
     tiingo_prices = _fetch_tiingo(symbol, start, end)
 
-    return _best_prices([yahoo_prices, stooq_prices, tiingo_prices], start) or yahoo_prices
+    result = _best_prices([yahoo_prices, stooq_prices, tiingo_prices], start) or yahoo_prices
+    _cache[cache_key] = result
+    return result
 
 
 @router.get("/prices/{symbol}")
@@ -203,12 +215,24 @@ def get_prices_bulk(
     end: str = Query(...),
 ):
     symbol_list = [s.strip().upper() for s in symbols.split(",") if s.strip()]
-    results: Dict[str, List[Dict[str, Any]]] = {}
 
-    for symbol in symbol_list:
-        try:
-            results[symbol] = _fetch_with_fallback(symbol, start, end)
-        except Exception:
-            results[symbol] = []
+    # Split into cached (instant) and uncached (need fetching)
+    cached = {sym: _cache[(sym, start, end)] for sym in symbol_list if (sym, start, end) in _cache}
+    uncached = [sym for sym in symbol_list if (sym, start, end) not in _cache]
+
+    results: Dict[str, List[Dict[str, Any]]] = dict(cached)
+
+    if uncached:
+        def fetch_one(symbol: str):
+            try:
+                return symbol, _fetch_with_fallback(symbol, start, end)
+            except Exception:
+                return symbol, []
+
+        with ThreadPoolExecutor(max_workers=min(len(uncached), 10)) as executor:
+            futures = {executor.submit(fetch_one, sym): sym for sym in uncached}
+            for future in as_completed(futures):
+                symbol, prices = future.result()
+                results[symbol] = prices
 
     return results
