@@ -68,15 +68,15 @@ export function StatsCards({ result }: Props) {
           <Info size={16} className="text-amber flex-shrink-0 mt-0.5" />
           <div className="text-muted leading-relaxed">
             <span className="text-amber font-semibold">Unequal investment periods: </span>
-            {lateStarters.map((r) => (
+            {lateStarters.map((r, i) => (
               <span key={r.symbol}>
-                <span className="text-text font-mono">{r.symbol}</span> didn't exist until{' '}
-                <span className="text-text">{formatDate(r.firstDate)}</span>, so fewer monthly
-                contributions were made into it — which is why its "Total Invested" is lower.
-                For a fair comparison, set your start date to{' '}
-                <span className="text-text font-mono">{r.firstDate}</span> or later.{' '}
+                {i > 0 && ', '}
+                <span className="text-text font-mono">{r.symbol}</span>
+                {' '}
+                <span className="text-text/70">({formatDate(r.firstDate)})</span>
               </span>
             ))}
+            {' '}started later than the others, so fewer contributions were made — their "Total Invested" will be lower.
           </div>
         </div>
       )}
