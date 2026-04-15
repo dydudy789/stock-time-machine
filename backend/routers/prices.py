@@ -4,6 +4,7 @@ from typing import List, Dict, Any
 import requests
 import csv
 import io
+import os
 
 router = APIRouter()
 
@@ -111,33 +112,76 @@ def _fetch_yahoo(symbol: str, start: str, end: str) -> List[Dict[str, Any]]:
     return prices
 
 
+def _fetch_tiingo(symbol: str, start: str, end: str) -> List[Dict[str, Any]]:
+    api_key = os.getenv("TIINGO_API_KEY", "")
+    if not api_key:
+        return []
+
+    # Tiingo uses plain tickers, no suffix needed
+    tiingo_symbol = symbol.replace("-", "").lower()
+    url = f"https://api.tiingo.com/tiingo/daily/{tiingo_symbol}/prices"
+    params = {
+        "startDate": start,
+        "endDate": end,
+        "resampleFreq": "monthly",
+        "token": api_key,
+    }
+
+    try:
+        resp = requests.get(url, params=params, timeout=15)
+        if not resp.ok:
+            return []
+        data = resp.json()
+        if not isinstance(data, list):
+            return []
+
+        prices = []
+        for row in data:
+            date = row.get("date", "")[:10]
+            close = row.get("adjClose") or row.get("close")
+            if date and close and float(close) > 0:
+                prices.append({"date": date, "price": round(float(close), 4)})
+        return prices
+    except Exception:
+        return []
+
+
+def _best_prices(candidates: List[List[Dict[str, Any]]], start: str) -> List[Dict[str, Any]]:
+    """Return the dataset that starts closest to (and not after) the requested start date."""
+    start_dt = datetime.strptime(start, "%Y-%m-%d")
+    best = []
+    best_gap = None
+    for prices in candidates:
+        if not prices:
+            continue
+        first_dt = datetime.strptime(prices[0]["date"], "%Y-%m-%d")
+        gap = (first_dt - start_dt).days
+        if best_gap is None or gap < best_gap:
+            best_gap = gap
+            best = prices
+    return best
+
+
 def _fetch_with_fallback(symbol: str, start: str, end: str) -> List[Dict[str, Any]]:
-    """Try Yahoo Finance first. If data starts significantly later than requested,
-    fall back to Stooq which has better pre-1985 coverage."""
+    """Try Yahoo → Stooq → Tiingo, return whichever has data closest to the requested start."""
+    start_dt = datetime.strptime(start, "%Y-%m-%d")
+
     try:
         yahoo_prices = _fetch_yahoo(symbol, start, end)
-    except HTTPException:
-        yahoo_prices = []
     except Exception:
         yahoo_prices = []
 
-    # Check if Yahoo returned data close to the requested start date (within 2 years)
-    start_dt = datetime.strptime(start, "%Y-%m-%d")
+    # If Yahoo data starts within 2 years of requested start, it's good enough
     if yahoo_prices:
         first_dt = datetime.strptime(yahoo_prices[0]["date"], "%Y-%m-%d")
-        gap_years = (first_dt - start_dt).days / 365
-        if gap_years <= 2:
-            return yahoo_prices  # Yahoo data is good enough
+        if (first_dt - start_dt).days / 365 <= 2:
+            return yahoo_prices
 
-    # Yahoo data is missing or starts too late — try Stooq
+    # Try Stooq and Tiingo in parallel for older data
     stooq_prices = _fetch_stooq(symbol, start, end)
-    if stooq_prices:
-        stooq_first = datetime.strptime(stooq_prices[0]["date"], "%Y-%m-%d")
-        # Use Stooq if it starts earlier than Yahoo
-        if not yahoo_prices or stooq_first < datetime.strptime(yahoo_prices[0]["date"], "%Y-%m-%d"):
-            return stooq_prices
+    tiingo_prices = _fetch_tiingo(symbol, start, end)
 
-    return yahoo_prices
+    return _best_prices([yahoo_prices, stooq_prices, tiingo_prices], start) or yahoo_prices
 
 
 @router.get("/prices/{symbol}")
