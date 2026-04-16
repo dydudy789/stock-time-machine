@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { Hero } from './components/Hero'
 import { EraSelector } from './components/EraSelector'
 import { StockPicker } from './components/StockPicker'
@@ -8,24 +8,118 @@ import { StatsCards } from './components/StatsCards'
 import { getEraById, INDEX_STOCKS } from './data/eras'
 import { fetchPricesBulk } from './lib/api'
 import { runSimulation } from './lib/dca'
+import { track } from './lib/analytics'
 import type { EraId, DCAConfig, SimulationResult } from './types'
-import { AlertCircle, RotateCcw } from 'lucide-react'
+import { AlertCircle, RotateCcw, Share2, Check } from 'lucide-react'
 import clsx from 'clsx'
 
+function parseUrlParams() {
+  const p = new URLSearchParams(window.location.search)
+  return {
+    era: (p.get('era') as EraId) || null,
+    stocks: p.get('stocks')?.split(',').filter(Boolean) ?? [],
+    amount: Number(p.get('amount')) || 100,
+    start: p.get('start') || '',
+    end: p.get('end') || '2025-01',
+  }
+}
+
 export default function App() {
-  const [selectedEra, setSelectedEra] = useState<EraId | null>(null)
-  const [selectedStocks, setSelectedStocks] = useState<string[]>([])
-  const [dcaConfig, setDcaConfig] = useState<DCAConfig>({
-    monthlyAmount: 100,
-    startDate: '',
-    endDate: '2025-01',
+  const initial = parseUrlParams()
+
+  const [selectedEra, setSelectedEra] = useState<EraId | null>(initial.era)
+  const [selectedStocks, setSelectedStocks] = useState<string[]>(initial.stocks)
+  const [dcaConfig, setDcaConfig] = useState<DCAConfig>(() => {
+    const eraInfo = initial.era ? getEraById(initial.era) : null
+    return {
+      monthlyAmount: initial.amount,
+      startDate: initial.start || eraInfo?.dateRange.start.slice(0, 7) || '',
+      endDate: initial.end,
+    }
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<SimulationResult | null>(null)
+  const [copied, setCopied] = useState(false)
 
   const simulatorRef = useRef<HTMLDivElement>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
+  const autoRanRef = useRef(false)
+
+  // Keep URL in sync with current config
+  useEffect(() => {
+    if (!selectedEra) return
+    const p = new URLSearchParams()
+    p.set('era', selectedEra)
+    if (selectedStocks.length) p.set('stocks', selectedStocks.join(','))
+    p.set('amount', String(dcaConfig.monthlyAmount))
+    if (dcaConfig.startDate) p.set('start', dcaConfig.startDate)
+    if (dcaConfig.endDate) p.set('end', dcaConfig.endDate)
+    window.history.replaceState(null, '', '?' + p.toString())
+  }, [selectedEra, selectedStocks, dcaConfig])
+
+  const runSimulationFn = useCallback(async (
+    era: EraId,
+    stocks: string[],
+    config: DCAConfig,
+  ) => {
+    if (!era || stocks.length === 0) return
+
+    setLoading(true)
+    setError(null)
+    setResult(null)
+
+    try {
+      const startFull = config.startDate + '-01'
+      const endFull = config.endDate + '-01'
+      const priceMap = await fetchPricesBulk(stocks, startFull, endFull)
+
+      const eraInfo = getEraById(era)!
+      const nameMap: Record<string, string> = {}
+      for (const s of [...eraInfo.stocks, ...eraInfo.outcasts, ...INDEX_STOCKS]) {
+        nameMap[s.symbol] = s.name
+      }
+
+      const outcastSymbols = new Set(eraInfo.outcasts.map((s) => s.symbol))
+      const simulation = runSimulation(priceMap, nameMap, outcastSymbols, {
+        ...config,
+        startDate: startFull,
+        endDate: endFull,
+      })
+
+      if (simulation.stockResults.length === 0) {
+        throw new Error('No price data returned. Try adjusting the date range.')
+      }
+
+      setResult(simulation)
+      track('simulation-run', {
+        era,
+        stocks: stocks.join(','),
+        amount: config.monthlyAmount,
+      })
+
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth' })
+      }, 100)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Something went wrong.')
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  // Auto-run if page was loaded from a shared link with all params
+  useEffect(() => {
+    if (autoRanRef.current) return
+    if (initial.era && initial.stocks.length > 0 && initial.start) {
+      autoRanRef.current = true
+      runSimulationFn(initial.era, initial.stocks, {
+        monthlyAmount: initial.amount,
+        startDate: initial.start,
+        endDate: initial.end,
+      })
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleStart() {
     simulatorRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -36,65 +130,39 @@ export default function App() {
     setSelectedStocks([])
     setResult(null)
     setError(null)
+    track('era-selected', { era })
     const eraInfo = getEraById(era)
     if (eraInfo) {
-      // Store as YYYY-MM for the month picker
       setDcaConfig((c) => ({ ...c, startDate: eraInfo.dateRange.start.slice(0, 7) }))
     }
   }
 
   function handleToggleStock(symbol: string) {
-    setSelectedStocks((prev) =>
-      prev.includes(symbol) ? prev.filter((s) => s !== symbol) : [...prev, symbol]
-    )
+    setSelectedStocks((prev) => {
+      const next = prev.includes(symbol) ? prev.filter((s) => s !== symbol) : [...prev, symbol]
+      track('stock-toggled', { symbol, action: prev.includes(symbol) ? 'remove' : 'add' })
+      return next
+    })
     setResult(null)
   }
 
   async function handleRun() {
-    if (!selectedEra || selectedStocks.length === 0) return
-
-    setLoading(true)
-    setError(null)
-    setResult(null)
-
-    try {
-      // Append -01 to convert YYYY-MM → YYYY-MM-01 for the API
-      const startFull = dcaConfig.startDate + '-01'
-      const endFull = dcaConfig.endDate + '-01'
-      const priceMap = await fetchPricesBulk(selectedStocks, startFull, endFull)
-
-      const eraInfo = getEraById(selectedEra)!
-      const nameMap: Record<string, string> = {}
-      for (const s of [...eraInfo.stocks, ...eraInfo.outcasts, ...INDEX_STOCKS]) {
-        nameMap[s.symbol] = s.name
-      }
-
-      const outcastSymbols = new Set(eraInfo.outcasts.map((s) => s.symbol))
-      const simulation = runSimulation(priceMap, nameMap, outcastSymbols, {
-        ...dcaConfig,
-        startDate: startFull,
-        endDate: endFull,
-      })
-
-      if (simulation.stockResults.length === 0) {
-        throw new Error('No price data returned. Try adjusting the date range.')
-      }
-
-      setResult(simulation)
-      setTimeout(() => {
-        resultsRef.current?.scrollIntoView({ behavior: 'smooth' })
-      }, 100)
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Something went wrong.')
-    } finally {
-      setLoading(false)
-    }
+    if (!selectedEra) return
+    await runSimulationFn(selectedEra, selectedStocks, dcaConfig)
   }
 
   function handleReset() {
     setResult(null)
     setError(null)
     simulatorRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  function handleShare() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setCopied(true)
+      track('share-clicked')
+      setTimeout(() => setCopied(false), 2000)
+    })
   }
 
   const era = selectedEra ? getEraById(selectedEra) : null
@@ -142,13 +210,22 @@ export default function App() {
               <div className="text-teal font-mono text-sm mb-1">RESULTS</div>
               <h2 className="text-3xl font-bold text-text">Your Simulation Results</h2>
             </div>
-            <button
-              onClick={handleReset}
-              className="flex items-center gap-2 text-muted hover:text-text text-sm border border-border rounded-lg px-4 py-2 transition-colors"
-            >
-              <RotateCcw size={14} />
-              Run Another
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleShare}
+                className="flex items-center gap-2 text-muted hover:text-text text-sm border border-border rounded-lg px-4 py-2 transition-colors"
+              >
+                {copied ? <Check size={14} className="text-teal" /> : <Share2 size={14} />}
+                {copied ? 'Copied!' : 'Share'}
+              </button>
+              <button
+                onClick={handleReset}
+                className="flex items-center gap-2 text-muted hover:text-text text-sm border border-border rounded-lg px-4 py-2 transition-colors"
+              >
+                <RotateCcw size={14} />
+                Run Another
+              </button>
+            </div>
           </div>
 
           <ResultsChart data={result.combined} symbols={selectedStocks} stockResults={result.stockResults} />
