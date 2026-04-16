@@ -47,6 +47,11 @@ export default function App() {
   const storiesRef = useRef<HTMLDivElement>(null)
   const autoRanRef = useRef(false)
   const resultScrolledRef = useRef(false)
+  const pageLoadTime = useRef(Date.now())
+  const firstRunDone = useRef(false)
+  const defaultDatesRef = useRef({ start: dcaConfig.startDate, end: dcaConfig.endDate })
+  const startModifiedRef = useRef(false)
+  const endModifiedRef = useRef(false)
 
   // simulation-abandoned: fire on page leave if stocks were picked but never run
   useEffect(() => {
@@ -127,11 +132,14 @@ export default function App() {
       }
 
       setResult(simulation)
+      const timeToRun = Math.round((Date.now() - pageLoadTime.current) / 1000)
       track('simulation-run', {
         era,
         stocks: stocks.join(','),
         amount: config.monthlyAmount,
+        ...(firstRunDone.current ? {} : { time_to_first_run_seconds: timeToRun }),
       })
+      firstRunDone.current = true
 
       setTimeout(() => {
         resultsRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -174,8 +182,26 @@ export default function App() {
     track('era-selected', { era })
     const eraInfo = getEraById(era)
     if (eraInfo) {
-      setDcaConfig((c) => ({ ...c, startDate: eraInfo.dateRange.start.slice(0, 7) }))
+      const defaultStart = eraInfo.dateRange.start.slice(0, 7)
+      defaultDatesRef.current = { start: defaultStart, end: '2025-01' }
+      startModifiedRef.current = false
+      endModifiedRef.current = false
+      setDcaConfig((c) => ({ ...c, startDate: defaultStart }))
     }
+  }
+
+  function handleConfigChange(newConfig: DCAConfig) {
+    if (!startModifiedRef.current && newConfig.startDate !== dcaConfig.startDate &&
+        newConfig.startDate !== defaultDatesRef.current.start) {
+      startModifiedRef.current = true
+      track('date-range-modified', { field: 'start', era: selectedEra ?? '' })
+    }
+    if (!endModifiedRef.current && newConfig.endDate !== dcaConfig.endDate &&
+        newConfig.endDate !== defaultDatesRef.current.end) {
+      endModifiedRef.current = true
+      track('date-range-modified', { field: 'end', era: selectedEra ?? '' })
+    }
+    setDcaConfig(newConfig)
   }
 
   function handleToggleStock(symbol: string) {
@@ -222,7 +248,7 @@ export default function App() {
               era={era}
               selectedStocks={selectedStocks}
               config={dcaConfig}
-              onChange={setDcaConfig}
+              onChange={handleConfigChange}
               onRun={handleRun}
               loading={loading}
             />
