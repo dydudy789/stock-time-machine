@@ -44,7 +44,42 @@ export default function App() {
 
   const simulatorRef = useRef<HTMLDivElement>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
+  const storiesRef = useRef<HTMLDivElement>(null)
   const autoRanRef = useRef(false)
+  const resultScrolledRef = useRef(false)
+
+  // simulation-abandoned: fire on page leave if stocks were picked but never run
+  useEffect(() => {
+    const handler = () => {
+      if (selectedStocks.length > 0 && !result) {
+        track('simulation-abandoned', { era: selectedEra ?? '', stocks_selected: selectedStocks.length })
+      }
+    }
+    window.addEventListener('beforeunload', handler)
+    return () => window.removeEventListener('beforeunload', handler)
+  }, [selectedStocks, result, selectedEra])
+
+  // result-scrolled: fire once when "How the Stories Ended" enters the viewport
+  useEffect(() => {
+    if (!result) {
+      resultScrolledRef.current = false
+      return
+    }
+    const el = storiesRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !resultScrolledRef.current) {
+          resultScrolledRef.current = true
+          track('result-scrolled', { era: selectedEra ?? '' })
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.3 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [result, selectedEra])
 
   // Keep URL in sync with current config
   useEffect(() => {
@@ -126,6 +161,12 @@ export default function App() {
   }
 
   function handleEraSelect(era: EraId) {
+    if (selectedEra && selectedEra !== era) {
+      track('era-changed', { from: selectedEra, to: era })
+      if (selectedStocks.length > 0 && !result) {
+        track('simulation-abandoned', { era: selectedEra, stocks_selected: selectedStocks.length })
+      }
+    }
     setSelectedEra(era)
     setSelectedStocks([])
     setResult(null)
@@ -232,7 +273,7 @@ export default function App() {
           <StatsCards result={result} />
 
           {/* How the stories ended */}
-          <div>
+          <div ref={storiesRef}>
             <h3 className="text-text font-bold text-lg mb-4">How the Stories Ended</h3>
             <div className="grid md:grid-cols-2 gap-4">
               {result.stockResults.map((r) => {
