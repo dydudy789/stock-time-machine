@@ -81,8 +81,12 @@ export function ResultsChart({ data, symbols, stockResults }: Props) {
             tick={{ fill: '#64748b', fontSize: 10, fontFamily: 'monospace' }}
             tickLine={false}
             axisLine={false}
-            tickFormatter={(v: number) => formatCurrency(v)}
-            width={65}
+            tickFormatter={(v: number) => {
+              if (v >= 1_000_000) return `$${(v / 1_000_000).toFixed(1)}M`
+              if (v >= 1_000) return `$${(v / 1_000).toFixed(0)}K`
+              return `$${v}`
+            }}
+            width={48}
           />
 
           <Tooltip content={<CustomTooltip />} />

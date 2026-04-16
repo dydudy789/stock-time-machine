@@ -272,25 +272,25 @@ export default function App() {
       {/* Results */}
       {result && era && (
         <div ref={resultsRef} className="max-w-6xl mx-auto px-4 pb-24 space-y-8">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <div className="text-teal font-mono text-sm mb-1">RESULTS</div>
               <h2 className="text-3xl font-bold text-text">Your Simulation Results</h2>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 self-start sm:self-auto">
               <button
                 onClick={handleShare}
                 className="flex items-center gap-2 text-muted hover:text-text text-sm border border-border rounded-lg px-4 py-2 transition-colors"
               >
                 {copied ? <Check size={14} className="text-teal" /> : <Share2 size={14} />}
-                {copied ? 'Copied!' : 'Share'}
+                <span>{copied ? 'Copied!' : 'Share'}</span>
               </button>
               <button
                 onClick={handleReset}
                 className="flex items-center gap-2 text-muted hover:text-text text-sm border border-border rounded-lg px-4 py-2 transition-colors"
               >
                 <RotateCcw size={14} />
-                Run Another
+                <span>Run Another</span>
               </button>
             </div>
           </div>
