@@ -40,6 +40,7 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<SimulationResult | null>(null)
+  const [skippedStocks, setSkippedStocks] = useState<{ symbol: string; availableFrom: string }[]>([])
   const [copied, setCopied] = useState(false)
 
   const simulatorRef = useRef<HTMLDivElement>(null)
@@ -108,6 +109,7 @@ export default function App() {
     setLoading(true)
     setError(null)
     setResult(null)
+    setSkippedStocks([])
 
     try {
       const startFull = config.startDate + '-01'
@@ -129,6 +131,26 @@ export default function App() {
 
       if (simulation.stockResults.length === 0) {
         throw new Error('No price data returned. Try adjusting the date range.')
+      }
+
+      // Detect stocks that returned no data (e.g. IPO after start date)
+      const eraAllStocks = [...eraInfo.stocks, ...eraInfo.outcasts, ...INDEX_STOCKS]
+      const returnedSymbols = new Set(simulation.stockResults.map((r) => r.symbol))
+      const skipped = stocks
+        .filter((sym) => !returnedSymbols.has(sym))
+        .map((sym) => {
+          const info = eraAllStocks.find((s) => s.symbol === sym)
+          return { symbol: sym, availableFrom: info?.availableFrom ?? '' }
+        })
+      setSkippedStocks(skipped)
+
+      if (simulation.stockResults.length === 0) {
+        const reasons = skipped.map((s) =>
+          s.availableFrom
+            ? `${s.symbol} wasn't available until ${new Date(s.availableFrom).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`
+            : s.symbol
+        )
+        throw new Error(`No price data for the selected period. ${reasons.join(', ')}.`)
       }
 
       setResult(simulation)
@@ -294,6 +316,25 @@ export default function App() {
               </button>
             </div>
           </div>
+
+          {skippedStocks.length > 0 && (
+            <div className="flex items-start gap-3 bg-amber/5 border border-amber/20 rounded-xl p-4 text-sm">
+              <AlertCircle size={16} className="text-amber flex-shrink-0 mt-0.5" />
+              <div className="text-muted">
+                <span className="text-amber font-semibold">Some stocks were excluded: </span>
+                {skippedStocks.map((s, i) => (
+                  <span key={s.symbol}>
+                    {i > 0 && ', '}
+                    <span className="text-text font-mono">{s.symbol}</span>
+                    {s.availableFrom && (
+                      <span className="text-muted/70"> (IPO'd {new Date(s.availableFrom).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })})</span>
+                    )}
+                  </span>
+                ))}
+                {' '}— no price data exists before their listing date.
+              </div>
+            </div>
+          )}
 
           <ResultsChart data={result.combined} symbols={selectedStocks} stockResults={result.stockResults} />
           <StatsCards result={result} />
