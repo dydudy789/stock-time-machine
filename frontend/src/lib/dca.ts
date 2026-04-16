@@ -17,9 +17,12 @@ export function calculateDCA(
   prices: PricePoint[],
   config: DCAConfig
 ): { snapshots: MonthlySnapshot[]; totalInvested: number; finalValue: number } {
-  const filtered = prices.filter(
-    (p) => p.date >= config.startDate && p.date <= config.endDate
-  )
+  const startMonth = config.startDate.slice(0, 7)
+  const endMonth = config.endDate.slice(0, 7)
+  const filtered = prices.filter((p) => {
+    const m = p.date.slice(0, 7)
+    return m >= startMonth && m <= endMonth
+  })
 
   if (filtered.length === 0) {
     return { snapshots: [], totalInvested: 0, finalValue: 0 }
