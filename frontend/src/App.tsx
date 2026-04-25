@@ -330,7 +330,6 @@ export default function App() {
       {/* Results */}
       {step === 5 &&  result && era && (
         <div ref={resultsRef} className="max-w-6xl mx-auto px-4 pb-24 pt-8 space-y-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex flex-col items-center mb-4">
               <div className="text-teal font-mono text-sm mb-1">RESULTS</div>
               <h2 className="text-3xl font-bold text-text">Your Simulation Results</h2>
@@ -352,7 +351,6 @@ export default function App() {
                 <span>Run Another</span>
               </button>
             </div>
-          </div>
 
           {skippedStocks.length > 0 && (
             <div className="flex items-start gap-3 bg-amber/5 border border-amber/20 rounded-xl p-4 text-sm">
