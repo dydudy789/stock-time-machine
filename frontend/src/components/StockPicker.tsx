@@ -72,7 +72,7 @@ interface Props {
   onBack?: () => void
 }
 
-export function StockPicker({ era, selected, onTogglem, onBack }: Props) {
+export function StockPicker({ era, selected, onToggle, onBack }: Props) {
   const accentAmber = era.color === 'amber'
   const accent = accentAmber ? 'text-amber' : 'text-teal'
 

@@ -188,10 +188,6 @@ export default function App() {
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  function handleStart() {
-    simulatorRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
-
   function handleEraSelect(era: EraId) {
     if (selectedEra && selectedEra !== era) {
       track('era-changed', { from: selectedEra, to: era })
