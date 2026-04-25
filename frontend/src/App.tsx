@@ -273,9 +273,9 @@ export default function App() {
 
         <div className="flex justify-center pb-12">
           <button
-        onClick={() => setStep(3)}
-        disabled={!selectedEra}
-        className="bg-teal text-bg px-8 py-4 rounded-xl font-bold text-lg hover:bg-teal-dim transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() => setStep(3)}
+            disabled={!selectedEra}
+            className="bg-teal text-bg px-8 py-4 rounded-xl font-bold text-lg hover:bg-teal-dim transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Pick Your Stocks →
           </button>
@@ -284,29 +284,34 @@ export default function App() {
     )}
 
         {step === 3 && era && (
-          <>
-            <div className="pt-12">
-              <StockPicker
-                era={era}
-                selected={selectedStocks}
-                onToggle={handleToggleStock}
-              />
-              <div className="flex justify-center pb-12">
-                <button
-                  onClick={() => setStep(4)}
-                  disabled={selectedStocks.length === 0}
-                  className="bg-teal text-bg px-8 py-4 rounded-xl font-bold text-lg hover:bg-teal-dim transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Configure DCA →
-                </button>
-              </div>
+          <div className="relative pt-12">
+            <button
+              onClick={() => setStep(2)}
+              className="absolute top-4 left-8 bg-surface text-text border border-border px-6 py-3 rounded-xl font-bold hover:bg-border transition-colors"
+            >
+              ← Back
+            </button>
+
+            <StockPicker
+              era={era}
+              selected={selectedStocks}
+              onToggle={handleToggleStock}
+            />
+
+            <div className="flex justify-center pb-12">
+              <button
+                onClick={() => setStep(4)}
+                disabled={selectedStocks.length === 0}
+                className="bg-teal text-bg px-8 py-4 rounded-xl font-bold text-lg hover:bg-teal-dim transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Configure DCA →
+              </button>
             </div>
-          </>
+          </div>
         )}
 
         {step === 4 && era &&  (
           <>
-            <div className="pt-12">
               <DCAControls
                 era={era}
                 selectedStocks={selectedStocks}
@@ -315,7 +320,14 @@ export default function App() {
                 onRun={handleRun}
                 loading={loading}
               />
-            </div>
+              <div className="flex justify-start px-8 pb-12">
+                <button
+                  onClick={() => setStep(3)}
+                  className="text-muted hover:text-text border border-border px-6 py-3 rounded-xl transition-colors"
+                >
+                  ← Back
+                </button>
+              </div>
           </>
         )}
    
