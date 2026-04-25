@@ -329,7 +329,7 @@ export default function App() {
 
       {/* Results */}
       {step === 5 &&  result && era && (
-        <div ref={resultsRef} className="max-w-6xl mx-auto px-4 pb-24 space-y-8">
+        <div ref={resultsRef} className="max-w-6xl mx-auto px-4 pb-24 pt-8 space-y-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <div className="text-teal font-mono text-sm mb-1">RESULTS</div>
