@@ -42,6 +42,7 @@ export default function App() {
   const [result, setResult] = useState<SimulationResult | null>(null)
   const [skippedStocks, setSkippedStocks] = useState<{ symbol: string; availableFrom: string }[]>([])
   const [copied, setCopied] = useState(false)
+  const [step, setStep] = useState(1)
 
   const simulatorRef = useRef<HTMLDivElement>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
@@ -53,6 +54,7 @@ export default function App() {
   const defaultDatesRef = useRef({ start: dcaConfig.startDate, end: dcaConfig.endDate })
   const startModifiedRef = useRef(false)
   const endModifiedRef = useRef(false)
+
 
   // simulation-abandoned: fire on page leave if stocks were picked but never run
   useEffect(() => {
@@ -238,12 +240,13 @@ export default function App() {
   async function handleRun() {
     if (!selectedEra) return
     await runSimulationFn(selectedEra, selectedStocks, dcaConfig)
+    setStep(5)
   }
 
   function handleReset() {
     setResult(null)
     setError(null)
-    simulatorRef.current?.scrollIntoView({ behavior: 'smooth' })
+    setStep(2)
   }
 
   function handleShare() {
@@ -256,28 +259,67 @@ export default function App() {
 
   const era = selectedEra ? getEraById(selectedEra) : null
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [step])
+
   return (
     <div className="min-h-screen bg-bg text-text">
-      <Hero onStart={handleStart} />
+      {step === 1 && <Hero onStart={() => setStep(2)} />}
 
+    {step === 2 && (
       <div ref={simulatorRef}>
         <EraSelector selected={selectedEra} onSelect={handleEraSelect} />
 
-        {era && (
+        <div className="flex justify-center pb-12">
+          <button
+        onClick={() => setStep(3)}
+        disabled={!selectedEra}
+        className="bg-teal text-bg px-8 py-4 rounded-xl font-bold text-lg hover:bg-teal-dim transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Pick Your Stocks →
+          </button>
+        </div>
+      </div>
+    )}
+
+        {step === 3 && era && (
           <>
-            <StockPicker era={era} selected={selectedStocks} onToggle={handleToggleStock} />
-            <DCAControls
-              era={era}
-              selectedStocks={selectedStocks}
-              config={dcaConfig}
-              onChange={handleConfigChange}
-              onRun={handleRun}
-              loading={loading}
-            />
+            <div className="pt-12">
+              <StockPicker
+                era={era}
+                selected={selectedStocks}
+                onToggle={handleToggleStock}
+              />
+              <div className="flex justify-center pb-12">
+                <button
+                  onClick={() => setStep(4)}
+                  disabled={selectedStocks.length === 0}
+                  className="bg-teal text-bg px-8 py-4 rounded-xl font-bold text-lg hover:bg-teal-dim transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Configure DCA →
+                </button>
+              </div>
+            </div>
           </>
         )}
-      </div>
 
+        {step === 4 && era &&  (
+          <>
+            <div className="pt-12">
+              <DCAControls
+                era={era}
+                selectedStocks={selectedStocks}
+                config={dcaConfig}
+                onChange={handleConfigChange}
+                onRun={handleRun}
+                loading={loading}
+              />
+            </div>
+          </>
+        )}
+   
+    
       {/* Error */}
       {error && (
         <div className="max-w-6xl mx-auto px-4 pb-8">
@@ -291,8 +333,9 @@ export default function App() {
         </div>
       )}
 
+
       {/* Results */}
-      {result && era && (
+      {step === 5 &&  result && era && (
         <div ref={resultsRef} className="max-w-6xl mx-auto px-4 pb-24 space-y-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
