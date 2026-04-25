@@ -331,11 +331,12 @@ export default function App() {
       {step === 5 &&  result && era && (
         <div ref={resultsRef} className="max-w-6xl mx-auto px-4 pb-24 pt-8 space-y-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div>
+            <div className="flex flex-col items-center mb-4">
               <div className="text-teal font-mono text-sm mb-1">RESULTS</div>
               <h2 className="text-3xl font-bold text-text">Your Simulation Results</h2>
             </div>
-            <div className="flex items-center gap-2 self-start sm:self-auto">
+
+            <div className="flex justify-end gap-2 mb-4">
               <button
                 onClick={handleShare}
                 className="flex items-center gap-2 text-muted hover:text-text text-sm border border-border rounded-lg px-4 py-2 transition-colors"
