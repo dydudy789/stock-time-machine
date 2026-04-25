@@ -23,7 +23,7 @@ interface Props {
 export function EraSelector({ selected, onSelect }: Props) {
   return (
     <section className="max-w-6xl mx-auto px-4 py-16">
-      <div className="mb-10">
+      <div className="text-center">
         <div className="text-teal font-mono text-sm mb-2">STEP 01</div>
         <h2 className="text-3xl font-bold text-text">Choose Your Era</h2>
         <p className="text-muted mt-2">

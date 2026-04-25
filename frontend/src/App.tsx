@@ -284,18 +284,12 @@ export default function App() {
     )}
 
         {step === 3 && era && (
-          <div className="relative pt-12">
-            <button
-              onClick={() => setStep(2)}
-              className="absolute top-4 left-8 bg-surface text-text border border-border px-6 py-3 rounded-xl font-bold hover:bg-border transition-colors"
-            >
-              ← Back
-            </button>
-
+  <>
             <StockPicker
               era={era}
               selected={selectedStocks}
               onToggle={handleToggleStock}
+              onBack={() => setStep(2)}
             />
 
             <div className="flex justify-center pb-12">
@@ -307,28 +301,19 @@ export default function App() {
                 Configure DCA →
               </button>
             </div>
-          </div>
+          </>
         )}
 
-        {step === 4 && era &&  (
-          <>
-              <DCAControls
-                era={era}
-                selectedStocks={selectedStocks}
-                config={dcaConfig}
-                onChange={handleConfigChange}
-                onRun={handleRun}
-                loading={loading}
-              />
-              <div className="flex justify-start px-8 pb-12">
-                <button
-                  onClick={() => setStep(3)}
-                  className="text-muted hover:text-text border border-border px-6 py-3 rounded-xl transition-colors"
-                >
-                  ← Back
-                </button>
-              </div>
-          </>
+        {step === 4 && era && (
+          <DCAControls
+            era={era}
+            selectedStocks={selectedStocks}
+            config={dcaConfig}
+            onChange={handleConfigChange}
+            onRun={handleRun}
+            loading={loading}
+            onBack={() => setStep(3)}
+          />
         )}
    
     

@@ -69,9 +69,10 @@ interface Props {
   era: EraInfo
   selected: string[]
   onToggle: (symbol: string) => void
+  onBack?: () => void
 }
 
-export function StockPicker({ era, selected, onToggle }: Props) {
+export function StockPicker({ era, selected, onTogglem, onBack }: Props) {
   const accentAmber = era.color === 'amber'
   const accent = accentAmber ? 'text-amber' : 'text-teal'
 
@@ -81,8 +82,17 @@ export function StockPicker({ era, selected, onToggle }: Props) {
   const totalSelected = selected.length
 
   return (
-    <section className="max-w-6xl mx-auto px-4 pb-16">
-      <div className="mb-8">
+    <section className="max-w-6xl mx-auto px-4 pb-16 pt-8">
+      {onBack && (
+        <button
+          onClick={onBack}
+          className="mb-4 w-fit bg-surface text-text border border-border px-6 py-3 rounded-xl font-bold hover:bg-border transition-colors"
+        >
+          ← Back
+        </button>
+      )}
+
+      <div className="text-center mb-8">
         <div className={clsx('font-mono text-sm mb-2', accent)}>STEP 02</div>
         <h2 className="text-3xl font-bold text-text">Pick Your Stocks</h2>
         <p className="text-muted mt-2">

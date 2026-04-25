@@ -8,11 +8,12 @@ interface Props {
   onChange: (config: DCAConfig) => void
   onRun: () => void
   loading: boolean
+  onBack?: () => void
 }
 
 const AMOUNT_PRESETS = [50, 100, 250, 500, 1000]
 
-export function DCAControls({ era, selectedStocks, config, onChange, onRun, loading }: Props) {
+export function DCAControls({ era, selectedStocks, config, onChange, onRun, loading, onBack }: Props) {
   const accentAmber = era.color === 'amber'
   const accent = accentAmber ? 'text-amber' : 'text-teal'
   const accentBg = accentAmber ? 'bg-amber text-bg' : 'bg-teal text-bg'
@@ -32,8 +33,16 @@ export function DCAControls({ era, selectedStocks, config, onChange, onRun, load
   const canRun = selectedStocks.length > 0 && config.startDate && config.endDate && months > 0
 
   return (
-    <section className="max-w-5xl mx-auto px-4 pb-16">
-      <div className="mb-8">
+    <section className="max-w-5xl mx-auto px-4 pb-16 pt-8">
+      {onBack && (
+        <button
+          onClick={onBack}
+          className="mb-4 w-fit bg-surface text-text border border-border px-6 py-3 rounded-xl font-bold hover:bg-border transition-colors"
+        >
+          ← Back
+        </button>
+      )}
+      <div className="text-center mb-8">
         <div className={clsx('font-mono text-sm mb-2', accent)}>STEP 03</div>
         <h2 className="text-3xl font-bold text-text">Configure Your DCA</h2>
         <p className="text-muted mt-2">
