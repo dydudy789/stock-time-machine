@@ -42,7 +42,7 @@ export default function App() {
   const [result, setResult] = useState<SimulationResult | null>(null)
   const [skippedStocks, setSkippedStocks] = useState<{ symbol: string; availableFrom: string }[]>([])
   const [copied, setCopied] = useState(false)
-  const [step, setStep] = useState(1)
+  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1)
 
   const simulatorRef = useRef<HTMLDivElement>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
@@ -56,6 +56,17 @@ export default function App() {
   const endModifiedRef = useRef(false)
 
 
+  useEffect(() => {
+  console.log('step changed to:', step)
+  }, [step])
+
+  useEffect(() => {
+  document.title = step === 1 ? 'Stock Time Machine'
+    : step === 2 ? 'Pick Your Stocks'
+    : step === 3 ? 'Configure DCA'
+    : 'Your Results'
+  }, [step])
+ 
   // simulation-abandoned: fire on page leave if stocks were picked but never run
   useEffect(() => {
     const handler = () => {
@@ -101,11 +112,11 @@ export default function App() {
     window.history.replaceState(null, '', '?' + p.toString())
   }, [selectedEra, selectedStocks, dcaConfig])
 
-  const runSimulationFn = useCallback(async (
-    era: EraId,
-    stocks: string[],
-    config: DCAConfig,
-  ) => {
+  async function runSimulationFn(
+  era: EraId,
+  stocks: string[],
+  config: DCAConfig,
+  ) {
     if (!era || stocks.length === 0) return
 
     setLoading(true)
@@ -173,7 +184,8 @@ export default function App() {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }
+  //, [])
 
   // Auto-run if page was loaded from a shared link with all params
   useEffect(() => {

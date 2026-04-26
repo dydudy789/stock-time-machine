@@ -35,3 +35,15 @@ Open http://localhost:5173
 3. Set monthly investment amount and date range
 4. The backend fetches monthly adjusted-close prices from Yahoo Finance
 5. The frontend calculates DCA results and renders interactive charts
+
+
+
+
+
+2026-04-27 — React & TypeScript Learnings
+
+Union types restrict a variable to specific values e.g. useState<1|2|3|4>(1) — TypeScript shows an error if you try to set an invalid value
+Interfaces are contracts for props — if a component expects userName: string and the parent doesn't pass it, TypeScript flags it immediately without running the app
+useEffect runs code in response to state changes — [step] in the dependency array means "re-run when step changes"
+useCallback caches a function across renders — when removed and replaced with a regular async function, the closing }, []) must also be removed or it causes a syntax error
+Side effects — anything touching outside React (browser tab title via document.title, URL, API calls) belongs in useEffect, not directly in the component body
