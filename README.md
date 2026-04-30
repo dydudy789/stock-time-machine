@@ -47,3 +47,15 @@ Interfaces are contracts for props — if a component expects userName: string a
 useEffect runs code in response to state changes — [step] in the dependency array means "re-run when step changes"
 useCallback caches a function across renders — when removed and replaced with a regular async function, the closing }, []) must also be removed or it causes a syntax error
 Side effects — anything touching outside React (browser tab title via document.title, URL, API calls) belongs in useEffect, not directly in the component body
+
+
+2026-04-30 — I learned FastAPI & Backend, implementing the endpoint to receive user feedback.
+- Endpoints are URLs that the backend listens to. I built /api/feedback that can receive a message and optional email, adds a timestamp and saves it to feedback.json on the server.
+- Pydantic models define and validate the shape of incoming data. If a required field is missing then it will reject it. 
+- You can persist data without a db by using this I/O pattern: check if file exists -> read existing list -> append new entry -> dump appended list to json again using json.dump()
+- A router is a mini app that focuses on one functionality. FastAPI and other frameworks use decorators for defining routers.
+    The pattern is always:
+            @router.post("/feedback")  <- #decorator
+            def submit_feedback(body: FeedbackRequest):  <- #the function showing what to do if a request is received
+    
+    The decorator must always sit above the function.
