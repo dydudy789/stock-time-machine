@@ -1,7 +1,7 @@
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import prices
+from routers import prices, feedback
 
 app = FastAPI(title="Stock Time Machine API")
 
@@ -18,6 +18,8 @@ app.add_middleware(
 )
 
 app.include_router(prices.router, prefix="/api")
+
+app.include_router(feedback.router, prefix="/api")
 
 
 @app.get("/health")
