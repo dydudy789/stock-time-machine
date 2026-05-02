@@ -423,12 +423,10 @@ export default function App() {
           <p className="text-muted text-xs text-center font-mono border-t border-border pt-6">
             Past performance is not indicative of future results. This is for educational purposes only.
           </p>
+
+          <FeedbackForm />
         </div>
       )}
-
-
-    <FeedbackForm />
-
     </div>
   )
 }
