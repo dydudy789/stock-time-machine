@@ -2,7 +2,7 @@ import {useState} from 'react'
 import { submitFeedback } from '../lib/api'
 
 
-export function FeedbackForm( ) {
+export function FeedbackForm() {
   const [message, setMessage] = useState<string>('')
   const [email, setEmail] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)

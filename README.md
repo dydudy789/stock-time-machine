@@ -59,3 +59,19 @@ Side effects — anything touching outside React (browser tab title via document
             def submit_feedback(body: FeedbackRequest):  <- #the function showing what to do if a request is received
     
     The decorator must always sit above the function.
+
+
+2026-05-02 — I implented the front end that calls the backend endpoint for user feedback.
+- FeedbackForm.tsx is a React 'component' that sits under frontend/components. It returns a JSX and is used in App.tsx, the main frontend file.
+- State declarations (e.g. const [message, setMessage] = useState<string>('')...) define what data is tracked.
+- Handler functions (e.g.  async function handleSubmit(){...} ...) define what happens on user actions. In this case, backend submitFeedback is called on user submission. It can read state (meesage, email) and update state (success, error).
+- return(...) defines what gets shown on the screen, in jsx format (html+javascript). In this case, it passes the message and email in the text box to the stter functions, and links the hanlder function (handleSubmit()) to the submit button.
+- FeedbackForm section is appended to the results page in App.tsx with a simple <FeedbackForm />
+
+
+2026-05-02 — I implemented the frontend that calls the backend endpoint for user feedback.
+- FeedbackForm.tsx is a React component that sits under frontend/components. It returns JSX and is used in App.tsx, the main frontend file. A component is a function that returns JSX.
+- State declarations (e.g. const [message, setMessage] = useState<string>('')) define what data is tracked.
+- Handler functions (e.g. async function handleSubmit()) define what happens on user actions. handleSubmit reads state (message, email) and calls submitFeedback() from api.ts, a frontend function that sends the data to the backend /api/feedback endpoint via fetch() with a POST request. POST means "send data to the server", as opposed to GET which retrieves data.
+- return() defines what gets shown on screen in JSX format (HTML + JavaScript). It passes user input to setter functions and links handleSubmit to the submit button.
+- FeedbackForm is added to the results page in App.tsx with a simple <FeedbackForm />. The component manages all its own state internally — App.tsx doesn't need to know anything about it.
