@@ -20,6 +20,8 @@ def submit_feedback(body: FeedbackRequest):
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
+    print(entry)
+
     path = "feedback.json"
     existing = []
 
