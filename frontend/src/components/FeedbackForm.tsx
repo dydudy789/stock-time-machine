@@ -24,19 +24,21 @@ export function FeedbackForm( ) {
     }
 
   return (
-    <div>
-        <h2>Feedback</h2>
-        <textarea
+    <div className = "border rounded-xl p-4 text-sm max-w-lg mx-auto px-4 flex flex-col gap-3 mb-12">
+        <h2 className="text-center">Give Feedback!</h2>
+        <textarea className = "bg-bg text-text border border-border rounded-xl px-4 py-3" placeholder="Your message..."
         value={message}
         onChange={(e) => setMessage(e.target.value) }
         />
-        <input
+        <input className="bg-bg text-text border border-border rounded-xl px-4 py-3" placeholder="Email (optional)"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         />
-        <button onClick={handleSubmit}>Submit</button>
+        <div className="flex justify-center">
+        <button className='bg-teal text-bg px-6 py-2 rounded-xl font-bold text-sm w-fit' onClick={handleSubmit}>Submit</button>
         {error && <p>{error}</p>}
         {submitted && <p>Thank you for your feedback!</p>}
+        </div>
     </div>
   )
 
