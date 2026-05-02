@@ -21,3 +21,21 @@ export async function fetchPricesBulk(
 
   return res.json()
 }
+
+
+export async function submitFeedback(
+  message: string,
+  email?: string
+): Promise<{ok: boolean}> {
+
+  const res = await fetch(`${BASE}/feedback`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({message, email})
+    })
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({detail: "Failed to submit feedback"}))
+    throw new Error(error.detail ?? `HTTP ${res.status}`)
+  }
+  return res.json()
+}

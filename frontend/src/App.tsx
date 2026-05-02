@@ -12,6 +12,7 @@ import { track } from './lib/analytics'
 import type { EraId, DCAConfig, SimulationResult } from './types'
 import { AlertCircle, RotateCcw, Share2, Check } from 'lucide-react'
 import clsx from 'clsx'
+import { FeedbackForm } from './components/FeedbackForm'
 
 function parseUrlParams() {
   const p = new URLSearchParams(window.location.search)
@@ -30,7 +31,7 @@ export default function App() {
   const [selectedEra, setSelectedEra] = useState<EraId | null>(initial.era)
   const [selectedStocks, setSelectedStocks] = useState<string[]>(initial.stocks)
   const [dcaConfig, setDcaConfig] = useState<DCAConfig>(() => {
-    const eraInfo = initial.era ? getEraById(initial.era) : null
+  const eraInfo = initial.era ? getEraById(initial.era) : null
     return {
       monthlyAmount: initial.amount,
       startDate: initial.start || eraInfo?.dateRange.start.slice(0, 7) || '',
@@ -424,6 +425,10 @@ export default function App() {
           </p>
         </div>
       )}
+
+
+    <FeedbackForm />
+
     </div>
   )
 }
