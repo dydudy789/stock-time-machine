@@ -35,7 +35,9 @@ export function FeedbackForm() {
         onChange={(e) => setEmail(e.target.value)}
         />
         <div className="flex justify-center">
-        <button className='bg-teal text-bg px-6 py-2 rounded-xl font-bold text-sm w-fit' onClick={handleSubmit}>Submit</button>
+        <button className='bg-teal text-bg px-6 py-2 rounded-xl font-bold text-sm w-fit' onClick={handleSubmit} disabled={loading}>
+            {loading? 'Sending...' : 'Submit'}
+        </button>
         {error && <p>{error}</p>}
         {submitted && <p>Thank you for your feedback!</p>}
         </div>
