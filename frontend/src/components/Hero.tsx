@@ -1,6 +1,17 @@
 import { TrendingUp } from 'lucide-react'
 
-export function Hero({ onStart }: { onStart: () => void }) {
+export function Hero({ onStart, selectedEra, selectedStocks, monthlyAmount, onOpenModal, onRun, stockNameMap} : 
+  {
+    onStart : () => void
+    selectedEra: string | null
+    selectedStocks: string[]
+    monthlyAmount: number
+    onOpenModal : (step: number) => void
+    onRun: () => void
+    stockNameMap: Record<string, string>
+
+  }
+) {
   return (
     <section className="min-h-screen flex flex-col items-center justify-center px-4 text-center relative overflow-hidden">
       {/* Background grid */}
@@ -37,14 +48,28 @@ export function Hero({ onStart }: { onStart: () => void }) {
         <p className="text-muted/60 text-sm font-mono mb-12">
           Real historical data · Includes dividends · No accounts · No BS
         </p>
-
-        <button
-          onClick={onStart}
-          className="bg-teal text-bg px-8 py-4 rounded-xl font-bold text-lg hover:bg-teal-dim transition-colors"
-        >
-          Travel Back in Time →
-        </button>
-
+        
+        <div className="flex flex-col w-full max-w-4xl">
+          <div className="flex text-xs text-muted font-mono px-4 mb-1 text-left pr-16">
+            <div className="flex-1">ERA</div>
+            <div className="flex-1">STOCKS</div>
+            <div className="flex-1">DCA AMOUNT</div>
+          </div>
+          <div className="flex border border-border rounded-2xl overflow-hidden">
+            <button className="flex-1 p-4 text-left" onClick={() => onOpenModal(1) }>
+              {selectedEra? selectedEra : 'Choose Era'}
+            </button>
+            <button className="flex-1 p-4 text-left border-l border-border overflow-hidden" onClick={() => onOpenModal(2)}>
+              <span className="block truncate">
+                {selectedStocks.length > 0 ? selectedStocks.map(s => stockNameMap[s] ?? s).join(', ') : 'Choose stocks'}
+              </span>
+            </button>
+            <button className="flex-1 p-4 text-left border-l border-border" onClick={() => onOpenModal(3)}>
+              {monthlyAmount? '$' + monthlyAmount + ' dollars': 'Choose monthly amount'}
+            </button>
+            <button className="p-4 bg-teal text-bg font-bold" onClick={onRun}>Run</button>
+          </div>
+        </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-20 text-left">
           {[
             { label: 'Eras', value: '7', sub: '1980 – 2025' },

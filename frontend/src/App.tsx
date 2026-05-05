@@ -43,7 +43,8 @@ export default function App() {
   const [result, setResult] = useState<SimulationResult | null>(null)
   const [skippedStocks, setSkippedStocks] = useState<{ symbol: string; availableFrom: string }[]>([])
   const [copied, setCopied] = useState(false)
-  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1)
+  const [showResults, setShowResults] = useState(false)
+  const [modalStep, setModalStep] = useState(1)
 
   const simulatorRef = useRef<HTMLDivElement>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
@@ -55,18 +56,9 @@ export default function App() {
   const defaultDatesRef = useRef({ start: dcaConfig.startDate, end: dcaConfig.endDate })
   const startModifiedRef = useRef(false)
   const endModifiedRef = useRef(false)
+  const [isOpen, setIsOpen] = useState(false)
 
 
-  useEffect(() => {
-  console.log('step changed to:', step)
-  }, [step])
-
-  useEffect(() => {
-  document.title = step === 1 ? 'Stock Time Machine'
-    : step === 2 ? 'Pick Your Stocks'
-    : step === 3 ? 'Configure DCA'
-    : 'Your Results'
-  }, [step])
  
   // simulation-abandoned: fire on page leave if stocks were picked but never run
   useEffect(() => {
@@ -101,17 +93,26 @@ export default function App() {
     return () => observer.disconnect()
   }, [result, selectedEra])
 
-  // Keep URL in sync with current config
+
   useEffect(() => {
-    if (!selectedEra) return
-    const p = new URLSearchParams()
-    p.set('era', selectedEra)
-    if (selectedStocks.length) p.set('stocks', selectedStocks.join(','))
-    p.set('amount', String(dcaConfig.monthlyAmount))
-    if (dcaConfig.startDate) p.set('start', dcaConfig.startDate)
-    if (dcaConfig.endDate) p.set('end', dcaConfig.endDate)
-    window.history.replaceState(null, '', '?' + p.toString())
-  }, [selectedEra, selectedStocks, dcaConfig])
+  const p = new URLSearchParams(window.location.search)
+  const isSharedLink = p.get('era') && p.get('stocks') && p.get('start')
+  if (!isSharedLink) {
+    window.history.replaceState(null, '', window.location.pathname)
+    setSelectedEra(null)
+    setSelectedStocks([])
+  }
+  }, [])
+
+  useEffect(() => {
+  const p = new URLSearchParams(window.location.search)
+  if (!p.get('stocks')) {
+    window.history.replaceState(null, '', window.location.pathname)
+    setSelectedEra(null)
+    setSelectedStocks([])
+  }
+  }, [])
+
 
   async function runSimulationFn(
   era: EraId,
@@ -168,6 +169,7 @@ export default function App() {
       }
 
       setResult(simulation)
+      setShowResults(true)
       const timeToRun = Math.round((Date.now() - pageLoadTime.current) / 1000)
       track('simulation-run', {
         era,
@@ -202,6 +204,10 @@ export default function App() {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleEraSelect(era: EraId) {
+    if (selectedEra === era) {
+    setSelectedEra(null)
+    return
+    }
     if (selectedEra && selectedEra !== era) {
       track('era-changed', { from: selectedEra, to: era })
       if (selectedStocks.length > 0 && !result) {
@@ -249,13 +255,22 @@ export default function App() {
   async function handleRun() {
     if (!selectedEra) return
     await runSimulationFn(selectedEra, selectedStocks, dcaConfig)
-    setStep(5)
+    setShowResults(true)
+    const p = new URLSearchParams()
+    p.set('era', selectedEra)
+    if (selectedStocks.length) p.set('stocks', selectedStocks.join(','))
+    p.set('amount', String(dcaConfig.monthlyAmount))
+    if (dcaConfig.startDate) p.set('start', dcaConfig.startDate)
+    if (dcaConfig.endDate) p.set('end', dcaConfig.endDate)
+    window.history.replaceState(null, '', '?' + p.toString())
   }
 
   function handleReset() {
     setResult(null)
     setError(null)
-    setStep(2)
+    setShowResults(false)
+    setSelectedEra(null)
+    setSelectedStocks([])
   }
 
   function handleShare() {
@@ -267,65 +282,23 @@ export default function App() {
   }
 
   const era = selectedEra ? getEraById(selectedEra) : null
+  const stockNameMap = era 
+    ? [...era.stocks, ...era.outcasts, ...INDEX_STOCKS].reduce((acc, s) => ({ ...acc, [s.symbol]: s.name }), {} as Record<string, string>)
+    : {}
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [step])
 
   return (
     <div className="min-h-screen bg-bg text-text">
-      {step === 1 && <Hero onStart={() => setStep(2)} />}
+      <Hero
+        onStart={() => setIsOpen(true)}
+        selectedEra={era ? era.title : null}
+        selectedStocks={selectedStocks}
+        monthlyAmount={dcaConfig.monthlyAmount}
+        onOpenModal={(step) => { setIsOpen(true); setModalStep(step) }}
+        onRun={handleRun}
+        stockNameMap={stockNameMap}
+      />
 
-    {step === 2 && (
-      <div ref={simulatorRef}>
-        <EraSelector selected={selectedEra} onSelect={handleEraSelect} />
-
-        <div className="flex justify-center pb-12">
-          <button
-            onClick={() => setStep(3)}
-            disabled={!selectedEra}
-            className="bg-teal text-bg px-8 py-4 rounded-xl font-bold text-lg hover:bg-teal-dim transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Pick Your Stocks →
-          </button>
-        </div>
-      </div>
-    )}
-
-        {step === 3 && era && (
-  <>
-            <StockPicker
-              era={era}
-              selected={selectedStocks}
-              onToggle={handleToggleStock}
-              onBack={() => setStep(2)}
-            />
-
-            <div className="flex justify-center pb-12">
-              <button
-                onClick={() => setStep(4)}
-                disabled={selectedStocks.length === 0}
-                className="bg-teal text-bg px-8 py-4 rounded-xl font-bold text-lg hover:bg-teal-dim transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Configure DCA →
-              </button>
-            </div>
-          </>
-        )}
-
-        {step === 4 && era && (
-          <DCAControls
-            era={era}
-            selectedStocks={selectedStocks}
-            config={dcaConfig}
-            onChange={handleConfigChange}
-            onRun={handleRun}
-            loading={loading}
-            onBack={() => setStep(3)}
-          />
-        )}
-   
-    
       {/* Error */}
       {error && (
         <div className="max-w-6xl mx-auto px-4 pb-8">
@@ -341,7 +314,7 @@ export default function App() {
 
 
       {/* Results */}
-      {step === 5 &&  result && era && (
+      {showResults && result && era && (
         <div ref={resultsRef} className="max-w-6xl mx-auto px-4 pb-24 pt-8 space-y-8">
             <div className="flex flex-col items-center mb-4">
               <div className="text-teal font-mono text-sm mb-1">RESULTS</div>
@@ -427,6 +400,33 @@ export default function App() {
           <FeedbackForm />
         </div>
       )}
+
+      {/* Modal */}
+      {isOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setIsOpen(false)}>
+          <div className="bg-bg rounded-2xl p-6 max-h-[90vh] overflow-y-auto max-w-4xl w-full h-[90vh]" onClick={(e) => e.stopPropagation()}>
+            {isOpen && <button onClick={() => setIsOpen(false)} className="mt-4 ml-4 text-muted hover:text-text text-base flex items-center gap-1 mb-4">← Back</button>}
+            {modalStep === 1 && <EraSelector selected={selectedEra} onSelect={handleEraSelect} />}
+            {modalStep === 2 && (
+              era 
+                ? <StockPicker era={era} selected={selectedStocks} onToggle={handleToggleStock}/>
+                : <p className="text-muted text-center py-8">Please select an era first.</p>
+              )}
+            {modalStep === 3 && (
+              <DCAControls
+                era={era!}
+                selectedStocks={selectedStocks}
+                config={dcaConfig}
+                onChange={handleConfigChange}
+                onRun={handleRun}
+                loading={loading}
+              />
+            )}
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }
+
