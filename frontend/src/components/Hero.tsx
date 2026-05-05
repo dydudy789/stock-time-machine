@@ -56,15 +56,15 @@ export function Hero({ selectedEra, selectedStocks, monthlyAmount, onOpenModal, 
           </div>
           <div className="flex border border-border rounded-2xl overflow-hidden">
             <button className="flex-1 p-4 text-left" onClick={() => onOpenModal(1) }>
-              {selectedEra? selectedEra : 'Choose Era'}
+              {selectedEra ? <span className="text-text">{selectedEra}</span> : <span className="text-muted">Pick a decade</span>}
             </button>
             <button className="flex-1 p-4 text-left border-l border-border overflow-hidden" onClick={() => onOpenModal(2)}>
               <span className="block truncate">
-                {selectedStocks.length > 0 ? selectedStocks.map(s => stockNameMap[s] ?? s).join(', ') : 'Choose stocks'}
+                {selectedStocks.length > 0 ? <span className="text-text">{selectedStocks.map(s => stockNameMap[s] ?? s).join(', ')}</span> : <span className="text-muted">Pick stocks</span>}
               </span>
             </button>
             <button className="flex-1 p-4 text-left border-l border-border" onClick={() => onOpenModal(3)}>
-              {monthlyAmount? '$' + monthlyAmount + ' dollars': 'Choose monthly amount'}
+              {monthlyAmount ? <span className="text-text">${monthlyAmount} / month</span> : <span className="text-muted">Choose monthly amount</span>}
             </button>
             <button className="p-4 bg-teal text-bg font-bold" onClick={onRun}>Run</button>
           </div>
