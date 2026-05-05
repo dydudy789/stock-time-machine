@@ -34,14 +34,14 @@ export function FeedbackForm() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         />
+        {error && <p className="text-center text-loss">{error}</p>}
         {submitted
         ? <p className="text-center text-teal">Thank you for your feedback!</p>
         : <div className="flex justify-center">
             <button className='bg-teal text-bg px-6 py-2 rounded-xl font-bold text-sm w-fit' onClick={handleSubmit} disabled={loading}>
                 {loading? 'Sending...' : 'Submit'}
             </button>
-
-         </div>
+          </div>
         }
     </div>
     )
