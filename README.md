@@ -67,3 +67,11 @@ Side effects — anything touching outside React (browser tab title via document
 - Handler functions (e.g. async function handleSubmit()) define what happens on user actions. handleSubmit reads state (message, email) and calls submitFeedback() from api.ts, a frontend function that sends the data to the backend /api/feedback endpoint via fetch() with a POST request. POST means "send data to the server", as opposed to GET which retrieves data.
 - return() defines what gets shown on screen in JSX format (HTML + JavaScript). It passes user input to setter functions and links handleSubmit to the submit button.
 - FeedbackForm is added to the results page in App.tsx with a simple <FeedbackForm />. The component manages all its own state internally — App.tsx doesn't need to know anything about it.
+
+
+2026-05-04 — Replaced button navigation with a modal design.
+- 3-section configuration bar on the main page. Each section opens a modal where the user configures era, stocks, and DCA. App.tsx renders the relevant component inside the modal (EraSelector, StockPicker, or DCAControls) and passes down the state and handler functions as props.
+- The convention is: 
+    Props that receive functions are named on + event: onSelect, onRun, onChange. 
+    The functions passed in are named handle + action: handleEraSelect, handleRun, handleConfigChange
+- URL only updates after the simulation is run, not during configuration. Refreshing or clicking "Run Another" clears the selections.
