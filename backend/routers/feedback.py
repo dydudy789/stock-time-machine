@@ -1,12 +1,13 @@
 #feedback.py
 from fastapi import APIRouter
 from pydantic import BaseModel
-import json
 import os
-from datetime import datetime, timezone
+from supabase import create_client, Client
 
 router = APIRouter()
-
+url: str = os.environ.get("SUPABASE_URL")
+key: str = os.environ.get("SUPABASE_KEY")
+supabase: Client = create_client(url, key)
 
 class FeedbackRequest(BaseModel):
     message: str
@@ -17,25 +18,20 @@ def submit_feedback(body: FeedbackRequest):
     entry = {
         "message": body.message,
         "email": body.email,
-        "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
     print(entry)
 
-    path = "feedback.json"
-    existing = []
-
-    if os.path.exists(path):
-        with open(path, "r") as f:
-            existing = json.load(f)
-
-    existing.append(entry)
-
-    with open(path, "w") as f:
-        json.dump(existing, f, indent=2)
-
-    return {"ok": True}
-
+    try:
+        response = (
+            supabase.table("feedback")
+            .insert(entry)
+            .execute()
+        )
+        return response
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+    
 
 
 
