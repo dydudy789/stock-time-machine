@@ -1,8 +1,7 @@
 import { TrendingUp } from 'lucide-react'
 
-export function Hero({ onStart, selectedEra, selectedStocks, monthlyAmount, onOpenModal, onRun, stockNameMap} : 
+export function Hero({ selectedEra, selectedStocks, monthlyAmount, onOpenModal, onRun, stockNameMap} :
   {
-    onStart : () => void
     selectedEra: string | null
     selectedStocks: string[]
     monthlyAmount: number

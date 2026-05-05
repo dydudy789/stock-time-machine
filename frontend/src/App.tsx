@@ -46,7 +46,7 @@ export default function App() {
   const [showResults, setShowResults] = useState(false)
   const [modalStep, setModalStep] = useState(1)
 
-  const simulatorRef = useRef<HTMLDivElement>(null)
+
   const resultsRef = useRef<HTMLDivElement>(null)
   const storiesRef = useRef<HTMLDivElement>(null)
   const autoRanRef = useRef(false)
@@ -290,7 +290,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-bg text-text">
       <Hero
-        onStart={() => setIsOpen(true)}
+
         selectedEra={era ? era.title : null}
         selectedStocks={selectedStocks}
         monthlyAmount={dcaConfig.monthlyAmount}
