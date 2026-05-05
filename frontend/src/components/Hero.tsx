@@ -72,7 +72,7 @@ export function Hero({ onStart, selectedEra, selectedStocks, monthlyAmount, onOp
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-20 text-left">
           {[
-            { label: 'Eras', value: '7', sub: '1980 – 2025' },
+            { label: 'Eras', value: '9', sub: '1980 – 2025' },
             { label: 'Stocks', value: '100+', sub: 'Darlings & outcasts' },
             { label: 'Data', value: '45yr', sub: 'Real monthly prices' },
             { label: 'Dividends', value: '✓', sub: 'Fully included' },
@@ -99,7 +99,7 @@ export function Hero({ onStart, selectedEra, selectedStocks, monthlyAmount, onOp
             { years: '2005–10', label: 'Boom &\nCrash' },
             { years: '2010–15', label: 'Mobile\nExplosion' },
             { years: '2015–20', label: 'Big\nTech' },
-            { years: '2020–25', label: 'Meme\nStocks' },
+            { years: '2020–25', label: 'AI &\nMeme Stocks' },
           ].map((era, i, arr) => (
             <div key={era.years} className="flex items-center">
               <div className="text-center px-2">
