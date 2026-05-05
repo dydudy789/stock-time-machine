@@ -205,8 +205,9 @@ export default function App() {
 
   function handleEraSelect(era: EraId) {
     if (selectedEra === era) {
-    setSelectedEra(null)
-    return
+      setSelectedEra(null)
+      setSelectedStocks([])
+      return
     }
     if (selectedEra && selectedEra !== era) {
       track('era-changed', { from: selectedEra, to: era })
@@ -414,7 +415,7 @@ export default function App() {
               )}
             {modalStep === 3 && (
               <DCAControls
-                era={era!}
+                era={era ?? undefined}
                 selectedStocks={selectedStocks}
                 config={dcaConfig}
                 onChange={handleConfigChange}

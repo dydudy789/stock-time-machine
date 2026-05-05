@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import type { EraInfo, DCAConfig } from '../types'
 
 interface Props {
-  era: EraInfo
+  era?: EraInfo
   selectedStocks: string[]
   config: DCAConfig
   onChange: (config: DCAConfig) => void
@@ -14,7 +14,7 @@ interface Props {
 const AMOUNT_PRESETS = [50, 100, 250, 500, 1000]
 
 export function DCAControls({ era, selectedStocks, config, onChange, onRun, loading, onBack }: Props) {
-  const accentAmber = era.color === 'amber'
+  const accentAmber = era?.color === 'amber'
   const accent = accentAmber ? 'text-amber' : 'text-teal'
   const accentBg = accentAmber ? 'bg-amber text-bg' : 'bg-teal text-bg'
   const accentBorder = accentAmber ? 'border-amber' : 'border-teal'
@@ -102,7 +102,7 @@ export function DCAControls({ era, selectedStocks, config, onChange, onRun, load
               <div className="text-muted text-xs font-mono mb-1.5">START MONTH</div>
               <input
                 type="month"
-                min={era.dateRange.start.slice(0, 7)}
+                min={era?.dateRange.start.slice(0, 7)}
                 max={config.endDate || '2025-01'}
                 value={config.startDate}
                 onChange={(e) => onChange({ ...config, startDate: e.target.value })}
@@ -113,7 +113,7 @@ export function DCAControls({ era, selectedStocks, config, onChange, onRun, load
               <div className="text-muted text-xs font-mono mb-1.5">END MONTH</div>
               <input
                 type="month"
-                min={config.startDate || era.dateRange.start.slice(0, 7)}
+                min={config.startDate || era?.dateRange.start.slice(0, 7)}
                 max="2025-12"
                 value={config.endDate}
                 onChange={(e) => onChange({ ...config, endDate: e.target.value })}
