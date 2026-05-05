@@ -30,18 +30,19 @@ export function FeedbackForm() {
         value={message}
         onChange={(e) => setMessage(e.target.value) }
         />
-        <input className="bg-bg text-text border border-border rounded-xl px-4 py-3" placeholder="Email (optional)"
+        <input className="bg-bg text-text border border-border rounded-xl px-4 py-3" placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         />
-        <div className="flex justify-center">
-        <button className='bg-teal text-bg px-6 py-2 rounded-xl font-bold text-sm w-fit' onClick={handleSubmit} disabled={loading}>
-            {loading? 'Sending...' : 'Submit'}
-        </button>
-        {error && <p>{error}</p>}
-        {submitted && <p>Thank you for your feedback!</p>}
-        </div>
-    </div>
-  )
+        {submitted
+        ? <p className="text-center text-teal">Thank you for your feedback!</p>
+        : <div className="flex justify-center">
+            <button className='bg-teal text-bg px-6 py-2 rounded-xl font-bold text-sm w-fit' onClick={handleSubmit} disabled={loading}>
+                {loading? 'Sending...' : 'Submit'}
+            </button>
 
+         </div>
+        }
+    </div>
+    )
 }
